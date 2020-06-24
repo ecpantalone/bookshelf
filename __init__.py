@@ -1,21 +1,18 @@
-import os
-from flask import Flask__
+from flask import Flask, Blueprint
 from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 
-def create_app(test_config=None):
+def create_app():
     # create and configure the app
-    app = Flask(__name__, instance_relative_config=True)
-    app.config.from_mapping(
-        SECRET_KEY='dev',
-        SQLALCHEMY_DATABASE_URI = 'sqlite:///flasklibrary.db',
-        DATABASE=os.path.join(app.instance_path, 'flaskr.sqlite'),
-    )
+    app = Flask(__name__)
 
+    app.config[SECRET_KEY]='dev'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///bookshelf.db'
+    
     db.init_app(app)
 
-    # blueprint for auth routes in our app
+    # blueprint for auth routes in app
     from .auth import auth as auth_blueprint
     app.register_blueprint(auth_blueprint)
 
