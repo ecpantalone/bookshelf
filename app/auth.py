@@ -1,11 +1,20 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, flash, redirect
 from app import app
+from app.forms import LoginForm
 
 #auth = Blueprint('auth', __name__)
 
 @app.route('/signup')
 def signup():
     return render_template('signup.html')
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    form = LoginForm()
+    if form.validate_on_submit():
+        flash('Login requested for user {}, remember_me={}'.format(form.username.data, form.remember.me.data))
+        return redirect('/index')
+    return render_template('login.html', title='Sign In', form=form)
 
 @app.route('/logout')
 def logout():
