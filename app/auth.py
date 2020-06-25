@@ -18,7 +18,7 @@ def login():
 
 @app.route('/logout')
 def logout():
-    return render_template(url_for('logout'))
+    return render_template('logout.html')
 
 @app.route('/profile')
 def profile():
@@ -40,4 +40,4 @@ def profile():
             'notes': 'Great read.'
         }
     ]
-    return render_template(url_for('profile'), title='Profile Page', user=user, books=books)    
+    return render_template('profile.html', title='Profile Page', user=user, books=books)    
