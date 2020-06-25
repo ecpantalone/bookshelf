@@ -4,11 +4,12 @@ body {
     font-family: 'Courier New', Courier, monospace;
 }
 
-.bookshelf {
+.bookshelf, th, td {
     border: 3px solid black;
     border-collapse: collapse;
 }
 
-tr > .bookshelf {
-    margin: 2px
-}
+th, td {
+    padding: 5px;
+    text-align: left;
+  }
