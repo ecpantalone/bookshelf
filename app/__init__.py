@@ -2,6 +2,7 @@ from flask import Flask, Blueprint
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
+app.config.from_object(Config)
 
 from app import main
 from app import auth
