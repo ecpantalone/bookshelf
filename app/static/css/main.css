@@ -1,0 +1,14 @@
+body {
+    max-width: 800px;
+    margin: auto;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+.bookshelf {
+    border: 3px solid black;
+    border-collapse: collapse;
+}
+
+tr > .bookshelf {
+    margin: 2px
+}

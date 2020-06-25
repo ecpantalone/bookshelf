@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>{{ title }}</title>
+{% endblock %}
+
+{% block body %}
+<h1>Welcome, {{user.username}}!</h1>
+<h2>Here are your books...</h2>
+
+    <table class="bookshelf">
+        <tr>
+            <th>Title</th>
+            <th>Author</th>
+            <th>Purchase Date</th>
+            <th>Notes</th>
+        </tr>
+        {% for books in books %}
+        <tr>
+            <td>{{ books.title }}</td>
+            <td>{{ books.author }}</td>
+            <td>{{ books.purchase_date }}</td>
+            <td>{{ books.notes }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+{% endblock %}
