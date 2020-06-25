@@ -1,14 +1,15 @@
 from flask import Flask, Blueprint
 from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 from config import Config
 
 app = Flask(__name__)
 app.config.from_object(Config)
 
-from app import main
-from app import auth
+db = SQLAlchemy()
+migrate = Migrate(app, db)
 
-# db = SQLAlchemy()
+from app import main, auth, models
 
 # def create_app():
 #     from . import db
