@@ -13,12 +13,12 @@ def login():
     form = LoginForm()
     if form.validate_on_submit():
         flash('Login requested for user {}, remember_me={}'.format(form.username.data, form.remember.me.data))
-        return redirect('/index')
+        return redirect(url_for('index'))
     return render_template('login.html', title='Sign In', form=form)
 
 @app.route('/logout')
 def logout():
-    return render_template('logout.html')
+    return render_template(url_for('logout'))
 
 @app.route('/profile')
 def profile():
@@ -40,4 +40,4 @@ def profile():
             'notes': 'Great read.'
         }
     ]
-    return render_template('profile.html', title='Profile Page', user=user, books=books)    
+    return render_template(url_for('profile'), title='Profile Page', user=user, books=books)    

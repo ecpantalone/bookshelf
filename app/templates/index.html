@@ -5,9 +5,9 @@
 {% endblock %}
 
 {% block body %}
-<h1>Welcome to Your Flask Library Bookshelf</h1>
-<h2><a href="/signup">Sign Up</href></h2>
-<h2><a href="/login">Log In</href></h2>
-<h2><a href="/profile">See Your Profile</href></h2>
+<h2>Welcome to Your Flask Library Bookshelf</h1>
+<h3><a href="{{ url_for('signup')}}">Sign Up</a></h3>
+<h3><a href="{{ url_for('login')}}">Log In</a></h3>
+<h3><a href="{{ url_for('profile')}}">See Your Profile</a></h3>
 
 {% endblock %}
