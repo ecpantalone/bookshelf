@@ -43,13 +43,10 @@ def logout():
     logout_user()
     return redirect(url_for('index'))
 
-@app.route('/profile')
+@app.route('/user/<username>')
 @login_required
-def profile():
-    user = {
-        'username': 'Liz',
-        'useremail': 'ecpantalone@gmail.com'
-    }
+def user(username):
+    user = User.query.filter_by(username=username).first_or_404()
     books = [
         {
             'title': 'The Giving Tree',

@@ -1,6 +1,7 @@
 from app import db, login
 from datetime import datetime
 from flask_login import UserMixin
+from hashlib import md5
 from werkzeug.security import generate_password_hash, check_password_hash
 
 class User(UserMixin, db.Model):
@@ -19,6 +20,10 @@ class User(UserMixin, db.Model):
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
 
+    def avatar(self, size):
+        digest = md5(self.email.lower().encode('utf-8')).hexdigest()
+        return 'https://www.gravatar.com/avatar/{}?d=identicon&s={}'.format(digest, size)
+
 @login.user_loader
 def load_user(id):
     return User.query.get(int(id))
@@ -28,7 +33,7 @@ class Book(db.Model):
     title = db.Column(db.String(1000), index=True, unique=False)
     author = db.Column(db.String(1000), index=True, unique=False)
     notes = db.Column(db.String(1500))
-    purchase_date = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    purchase_date = db.Column(db.Date, index=True, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
     def __repr__(self):
