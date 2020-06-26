@@ -1,5 +1,5 @@
 from flask import render_template, Blueprint
-from app import app
+from app import app, db
 
 #main = Blueprint('app', __name__)
 #app = Flask(__name__)

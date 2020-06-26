@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, flash, redirect, url_for, request
-from app import app
+from app import app, db
 from app.forms import LoginForm, RegistrationForm
 from app.models import User
 from flask_login import current_user, login_user, logout_user, login_required
@@ -11,7 +11,7 @@ from werkzeug.urls import url_parse
 def signup():
     if current_user.is_authenticated:
         return redirect(url_for('profile'))
-    form = RegistrationFor()
+    form = RegistrationForm()
     if form.validate_on_submit():
         user = User(username=form.username.data, email=form.email.data)
         user.set_password(form.password.data)
