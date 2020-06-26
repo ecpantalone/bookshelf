@@ -7,7 +7,7 @@ from werkzeug.urls import url_parse
 
 #auth = Blueprint('auth', __name__)
 
-@app.route('/signup')
+@app.route('/signup', methods=['GET', 'POST'])
 def signup():
     if current_user.is_authenticated:
         return redirect(url_for('profile'))
@@ -36,7 +36,7 @@ def login():
         if not next_page or url_parse(next_page).netloc != '':
             next_page = url_for('index')
         return redirect(url_for('index'))
-    return render_template('login.html', title='Sign In', form=form)
+    return render_template('profile.html', title='Profile Page', form=form)
 
 @app.route('/logout')
 def logout():
