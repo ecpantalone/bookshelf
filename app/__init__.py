@@ -1,12 +1,14 @@
 from flask import Flask, Blueprint
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
+from flask_login import LoginManager
 from config import Config
 
 app = Flask(__name__)
 app.config.from_object(Config)
 db = SQLAlchemy()
 migrate = Migrate(app, db)
+login = LoginManager(app)
 
 from app import main, auth, models
 
