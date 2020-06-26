@@ -1,9 +1,9 @@
 from datetime import datetime
-from app import db
+from app import db, login
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 
-class User(User.Mixin, db.Model):
+class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(100), index=True, unique=True)
     email = db.Column(db.String(200), index=True, unique=True)
