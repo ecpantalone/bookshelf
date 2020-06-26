@@ -6,7 +6,7 @@ class User(db.Model):
     username = db.Column(db.String(100), index=True, unique=True)
     email = db.Column(db.String(200), index=True, unique=True)
     password_hash = db.Column(db.String(200))
-    books = db.Column(db.Integer, db.ForeignKey('book.id'))
+    books = db.relationship('Book', backref='owner', lazy='dynamic')
 
     def __repr__(self):
         return '<User {}>'.format(self.username)
@@ -17,6 +17,7 @@ class Book(db.Model):
     author = db.Column(db.String(1000), index=True, unique=False)
     notes = db.Column(db.String(1500))
     purchase_date = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
     def __repr__(self):
         return '<Book {}>'.format(self.title)
