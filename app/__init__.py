@@ -12,7 +12,7 @@ migrate = Migrate(app, db)
 login = LoginManager(app)
 login.login_view = 'login'
 
-from app import main, auth, models
+from app import routes, models
 
 # def create_app():
 #     from . import db

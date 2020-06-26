@@ -1,11 +1,15 @@
 from app import app, db
-from app.forms import LoginForm, RegistrationForm
-from app.models import User
+from app.forms import LoginForm, RegistrationForm, BookForm, EditBookForm
+from app.models import User, Book
 from flask import Blueprint, render_template, flash, redirect, url_for, request
 from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
 
 #auth = Blueprint('auth', __name__)
+@app.route('/')
+@app.route('/index')
+def index():
+    return render_template(('index.html'))
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
@@ -18,7 +22,7 @@ def signup():
         db.session.add(user)
         db.session.commit()
         flash('Your registration was successful')
-        return redirect(url_for('profile'))
+        return redirect(url_for('index'))
     return render_template('signup.html', title='Sign Up', form=form)
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -35,30 +39,43 @@ def login():
         next_page = request.args.get('next')
         if not next_page or url_parse(next_page).netloc != '':
             next_page = url_for('index')
-        return redirect(url_for('index'))
-    return render_template('profile.html', title='Profile Page', form=form)
+        return redirect(url_for('next_page'))
+    return render_template('login.html', title='Sign In', form=form)
 
 @app.route('/logout')
 def logout():
     logout_user()
-    return redirect(url_for('index'))
+    return redirect(url_for('logout'))
 
-@app.route('/user/<username>')
+@app.route('/user/<username>', methods=['GET', 'POST'])
 @login_required
 def user(username):
     user = User.query.filter_by(username=username).first_or_404()
-    books = [
-        {
-            'title': 'The Giving Tree',
-            'author': 'Shel Silverstein',
-            'purchase_date': 'July 4, 2000',
-            'notes': 'Great read.'
-        },
-        {
-            'title': 'The Art of Fermentation',
-            'author': 'A Fun Guy',
-            'purchase_date': 'June 14, 2010',
-            'notes': 'Great read.'
-        }
-    ]
-    return render_template('profile.html', title='Profile Page', user=user, books=books)    
+    form = BookForm()
+    if form.validate_on_submit():
+        book = Book(body=form.book.data, username=current_user)
+        db.session.add(book)
+        db.session.commit()
+        flash('Your book has been added!')
+        return redirect(url_for('index'))
+    books = current_user.all()
+    return render_template('profile.html', title='Profile Page', user=user, books=books, form=form)
+
+@app.route('/edit_book', methods=['GET', 'POST'])
+@login_required
+def edit_book():
+    form = EditBookForm()
+    if form.validate_on_submit():
+        book.title = form.title.data
+        book.author = form.author.data
+        book.notes = form.notes.data
+        book.purchase_date = form.purchase_date.data
+        db.session.commit()
+        flash('Your changes have been saved')
+        return redirect(url_for('profile'))
+    elif request.method == 'GET':
+        form.title.data = book.title
+        form.author.data = book.author
+        form.notes.data = book.notes
+        form.purchase_date.data = book.purchase_data
+    return render_template('edit_book.html', title='Edit Book', form=form)
