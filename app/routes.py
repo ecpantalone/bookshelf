@@ -31,11 +31,11 @@ def login():
         return redirect(url_for('index'))
     form = LoginForm()
     if form.validate_on_submit():
-        user = User.query.filter_by(username=form.username.data).first()
-        if user is None or not user.check_password(form.password.data):
+        email = User.query.filter_by(email=form.email.data).first()
+        if email is None or not email.check_password(form.password.data):
             flash('Invalid username or password')
             return redirect(url_for('login'))
-        login_user(user, remember=form.remember_me.data)
+        login_user(email, remember=form.remember_me.data)
         next_page = request.args.get('next')
         if not next_page or url_parse(next_page).netloc != '':
             next_page = url_for('index')
@@ -47,9 +47,9 @@ def logout():
     logout_user()
     return redirect(url_for('logout'))
 
-@app.route('/user/<username>', methods=['GET', 'POST'])
+@app.route('/profile/<username>', methods=['GET', 'POST'])
 @login_required
-def user(username):
+def profile(username):
     user = User.query.filter_by(username=username).first_or_404()
     form = BookForm()
     if form.validate_on_submit():
@@ -57,7 +57,7 @@ def user(username):
         db.session.add(book)
         db.session.commit()
         flash('Your book has been added!')
-        return redirect(url_for('index'))
+        return redirect(url_for('profile'))
     books = current_user.all()
     return render_template('profile.html', title='Profile Page', user=user, books=books, form=form)
 
