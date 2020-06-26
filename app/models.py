@@ -5,11 +5,10 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(100), index=True, unique=True)
-    email = db.Column(db.String(200), index=True, unique=True)
-    password_hash = db.Column(db.String(200))
-    books = db.relationship('Book', backref='owner', lazy='dynamic')
-
+    username = db.Column(db.String(64), index=True, unique=True)
+    email = db.Column(db.String(120), index=True, unique=True)
+    password_hash = db.Column(db.String(128))
+    posts = db.relationship('Book', backref='owner', lazy='dynamic')
     def __repr__(self):
         return '<User {}>'.format(self.username)
 
@@ -25,10 +24,10 @@ def load_user(id):
 
 class Book(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(1000), index=True, unique=False)
-    author = db.Column(db.String(1000), index=True, unique=False)
+    title = db.Column(db.String(1000), index=True)
+    author = db.Column(db.String(1000), index=True)
     notes = db.Column(db.String(1500))
-    purchase_date = db.Column(db.Date, index=True, default=datetime.utcnow)
+    purchase_date = db.Column(db.Date, index=True, default=datetime.today)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
     def __repr__(self):
