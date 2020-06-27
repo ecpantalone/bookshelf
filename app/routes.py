@@ -44,25 +44,26 @@ def logout():
     logout_user()
     return redirect(url_for('index'))
 
-@app.route('/user/<username>', methods=['GET', 'POST'])
+@app.route('/user/<username>', methods=['GET'])
 @login_required
 def user(username):
     user = User.query.filter_by(username=username).first_or_404()
-    #books = current_user.all()
-    books = [
-        {
-            'title': 'The Giving Tree',
-            'author': 'Shel Silverstein',
-            'purchase_date': 'July 4, 2000',
-            'notes': 'Great read.'
-        },
-        {
-            'title': 'The Art of Fermentation',
-            'author': 'A Fun Guy',
-            'purchase_date': 'June 14, 2010',
-            'notes': 'Great read.'
-        }
-    ]
+    current_id = current_user.id
+    books = Book.query.filter_by(user_id=current_id).all()
+    # books = [
+    #     {
+    #         'title': 'The Giving Tree',
+    #         'author': 'Shel Silverstein',
+    #         'purchase_date': 'July 4, 2000',
+    #         'notes': 'Great read.'
+    #     },
+    #     {
+    #         'title': 'The Art of Fermentation',
+    #         'author': 'A Fun Guy',
+    #         'purchase_date': 'June 14, 2010',
+    #         'notes': 'Great read.'
+    #     }
+    # ]
     return render_template('user.html', title='Profile Page', user=user, books=books)
 
 @app.route('/add_book', methods=['GET', 'POST'])
