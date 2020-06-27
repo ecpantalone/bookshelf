@@ -70,8 +70,8 @@ def user(username):
 def add_book():
     form = BookForm()
     if form.validate_on_submit():
-        book = Book(title = form.title.data, author = form.author.data, notes = form.notes.data, purchase_date = form.purchase_date.data)
-        book.set_user_id = current_user.id
+        book = Book(title=form.title.data, author=form.author.data, notes=form.notes.data, purchase_date=form.purchase_date.data)
+        book.user_id = current_user.id
         db.session.add(book)
         db.session.commit()
         flash('Your book has been added')
