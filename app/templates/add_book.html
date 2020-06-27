@@ -6,7 +6,7 @@
 
 {% block body %}
 <h1>Add a book to your bookshelf, {{ current_user.username }}!</h1>
-<form action="" method="post">
+<form action="" method="post" novalidate>
     {{ form.hidden_tag() }}
     <p>
         {{ form.title.label }}<br>
