@@ -50,20 +50,6 @@ def user(username):
     user = User.query.filter_by(username=username).first_or_404()
     current_id = current_user.id
     books = Book.query.filter_by(user_id=current_id).all()
-    # books = [
-    #     {
-    #         'title': 'The Giving Tree',
-    #         'author': 'Shel Silverstein',
-    #         'purchase_date': 'July 4, 2000',
-    #         'notes': 'Great read.'
-    #     },
-    #     {
-    #         'title': 'The Art of Fermentation',
-    #         'author': 'A Fun Guy',
-    #         'purchase_date': 'June 14, 2010',
-    #         'notes': 'Great read.'
-    #     }
-    # ]
     return render_template('user.html', title='Profile Page', user=user, books=books)
 
 @app.route('/add_book', methods=['GET', 'POST'])
@@ -79,19 +65,33 @@ def add_book():
         return redirect(url_for('index'))
     return render_template('add_book.html', title='Add Book', form=form)
 
-@app.route('/edit_book', methods=['GET', 'POST'])
+@app.route('/edit_book/<book_id>', methods=['GET', 'POST'])
 @login_required
 def edit_book(book_id):
-    book_id = Book.query.get(book_id)
+    book = Book.query.filter_by(id={})
     form = EditBookForm(book_id)
     if form.validate_on_submit():
-        book.title = form.title.data
-        book.author = form.author.data
-        book.notes = form.notes.data
-        book.purchase_date = form.purchase_date.data
-        book.user_id = User.query.get(int(id))
+        book = Book(title=form.title.data, author=form.author.data, notes=form.notes.data, purchase_date=form.purchase_date.data)
+        book.user_id = current_user.id
+        db.session.delete(book)
+        db.session.add(book)
         db.session.commit()
         flash('Your changes have been saved')
         return redirect(url_for('index'))
     return render_template('edit_book.html', title='Edit Book', form=form)
 
+@app.route('/remove_book/<book_id>', methods=['GET', 'POST'])
+@login_required
+def remove_book(book_id):
+    form = EmptyForm()
+    if form.validate_on_submit():
+        book = Book.query.filter_by(id={})
+        db.session.delete(book)
+        db.session.commit()
+        flash('You have removed {} from your list.').format()
+        return redirect(url_for('index'))
+    else:
+        flash('Nope...book is still there.')
+        return redirect(url_for('index'))
+
+    return render_template('user.html', title='Profile', book=book)
