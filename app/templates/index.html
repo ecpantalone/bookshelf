@@ -7,29 +7,5 @@
 {% block body %}
 <h2>Welcome to Your Flask Library Bookshelf, {{ current_user.username}}!</h1>
 
-<h1>Welcome</h1>
-<h2>Here are your books...</h2>
-    <table class="bookshelf">
-        <tr>
-            <th>Title</th>
-            <th>Author</th>
-            <th>Purchase Date</th>
-            <th>Notes</th>
-        </tr>
-        {% if user == current_user %}
-        {% for book in books %}
-        <tr>
-            <td>{{ book.title }}</td>
-            <td>{{ book.author }}</td>
-            <td>{{ book.purchase_date }}</td>
-            <td>{{ book.notes }}</td>
-            <td><a href="{{ url_for('edit_book') }}">Edit this book</a></td>
-        </tr>
-        {% endfor %}
-        {% endif %}
-        <p>Want to add a book? <a href="{{ url_for('add_book') }}">Click here!</a></p>
-    </table>
-
-
 <h3><a href="{{ url_for('logout')}}">Logout</a></h3>
 {% endblock %}
