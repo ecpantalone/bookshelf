@@ -2,7 +2,7 @@ from flask import render_template, flash, redirect, url_for, request
 from flask_login import login_user, logout_user, current_user, login_required
 from werkzeug.urls import url_parse
 from app import app, db
-from app.forms import BookForm, EditBookForm, LoginForm, RegistrationForm
+from app.forms import BookForm, EditBookForm, EmptyForm, LoginForm, RegistrationForm
 from app.models import User, Book
 
 @app.route('/')
@@ -70,11 +70,9 @@ def user(username):
 def add_book():
     form = BookForm()
     if form.validate_on_submit():
-        book.title = form.title.data
-        book.author = form.author.data
-        book.notes = form.notes.data
-        book.purchase_date = form.purchase_date.data
-        book.user_id = User.query.get(int(id))
+        book = Book(title = form.title.data, author = form.author.data, notes = form.notes.data,
+        purchase_date = form.purchase_date.data)
+        book.set_user_id = current_user.id
         db.session.commit()
         flash('Your book has been added')
         return redirect(url_for('index'))
@@ -83,7 +81,7 @@ def add_book():
 @app.route('/edit_book', methods=['GET', 'POST'])
 @login_required
 def edit_book(book_id):
-    book_id = Book.id
+    book_id = Book.query.get(book_id)
     form = EditBookForm(book_id)
     if form.validate_on_submit():
         book.title = form.title.data
@@ -96,7 +94,3 @@ def edit_book(book_id):
         return redirect(url_for('index'))
     return render_template('edit_book.html', title='Edit Book', form=form)
 
-@app.route('/remove_book', methods=['GET', 'POST'])
-@login_required
-def remove_book():
-    return render_template('remove_book.html', title='Remove Book')

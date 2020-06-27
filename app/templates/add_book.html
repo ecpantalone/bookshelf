@@ -1,7 +1,6 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 
 {% block head %}
-
 {% endblock %}
 
 {% block body %}
@@ -35,6 +34,7 @@
         {% for error in form.purchase_date.errors %}
         <span style="color: red;">[{{ error }}]</span>
         {% endfor %}
+
     </p>
     <p>{{ form.submit() }}</p>
 </form>
