@@ -33,13 +33,14 @@ class RegistrationForm(FlaskForm):
 class BookForm(FlaskForm):
     title = TextAreaField('Title', validators=[DataRequired(), Length(min=1, max=200)])
     author = TextAreaField('Author', validators=[DataRequired(), Length(min=1, max=200)])
-    notes = TextAreaField('Author', validators=[DataRequired(), Length(min=1, max=500)])
+    notes = TextAreaField('Notes', validators=[DataRequired(), Length(min=1, max=500)])
     purchase_date = DateField('Date of Purchase')
     submit = SubmitField('Submit')
 
 class EditBookForm(FlaskForm):
     title = TextAreaField('Title', validators=[DataRequired(), Length(min=1, max=200)])
     author = TextAreaField('Author', validators=[DataRequired(), Length(min=1, max=200)])
-    notes = TextAreaField('Author', validators=[DataRequired(), Length(min=1, max=500)])
+    notes = TextAreaField('Notes', validators=[DataRequired(), Length(min=1, max=500)])
     purchase_date = DateField('Date of Purchase')
     submit = SubmitField('Submit')
+                
