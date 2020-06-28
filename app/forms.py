@@ -46,5 +46,6 @@ class EmptyForm(FlaskForm):
     submit = SubmitField('Submit')
 
 class EmailBookList(FlaskForm):
-    email = StringField('Email', validators=[DataRequired(), Email()])
+    recipient = StringField('Recipient Address', validators=[DataRequired(), Email()])
+    message = TextAreaField('Message')
     submit = SubmitField('Send Booklist')

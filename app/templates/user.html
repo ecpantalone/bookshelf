@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block body %}
-<h1>Welcome, {{ current_user.username}}!</h1>
+<h1>Welcome, {{ current_user.username }}!</h1>
 <h2>Here are your books...</h2>
     <table class="bookshelf">
         <tr>
@@ -30,7 +30,7 @@
         {% endfor %}
         <p>
             Want to email this booklist?
-            <a href="{{ url_for('send_booklist') }}">Click Here!</a>
+            <a href="/send_booklist/{{ current_user.username }}">Click Here!</a>
         </p>
         {% endif %}
     </table>

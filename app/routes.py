@@ -94,19 +94,21 @@ def edit_book(book_id):
         return redirect(url_for('index'))
     return render_template('edit_book.html', title='Edit Book', form=form)
 
-@app.route('/send_booklist/<user_id>', methods=['GET', 'POST'])
+@app.route('/send_booklist/<username>', methods=['GET', 'POST'])
 @login_required
-def send_booklist(user_id):
+def send_booklist(username):
+    user = User.query.filter_by(username=username).first_or_404()
+    current_id = current_user.id
+    books = Book.query.filter_by(user_id=current_id).all()
     form = EmailBookList()
-    #booklist = Book.query.filter_by(user_id=current_user.id).all()
-    # save as a txt file... and then 
     if form.validate_on_submit():
-        booklist = Book.query.get(user_id).all()
-        msg = Message(form.message.data, form.sender.data, form.recipient.data)
-        msg.body = booklist
+        recipient = form.recipient.data
+        msg = Message("A Booklist for You!", recipients=[recipient], sender='python.flask.bookshelf@gmail.com')
+        msg.body = form.message.data
+        msg.html = render_template('booklist.html', username=username, books=books)
         mail.send(msg)
         flash('Your booklist has been sent!')
         return redirect(url_for('index'))
-    return render_template('email_booklist.html', title='Email a Booklist', form=form)
+    return render_template('send_booklist.html', title='Email a Booklist', form=form, username=username, books=books)
 
 

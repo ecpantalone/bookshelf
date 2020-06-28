@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+        {% block head %}{% endblock %}
+    </head>
+    <body>
+        <h1>bookshelf.</h1>
+            <h3>
+                <a href="{{ url_for('index') }}">Home</a>
+                <a href="{{ url_for('login') }}">Login</a>
+                <a href="{{ url_for('signup')}}">Sign Up</a>
+            </h3>
+
+        <h4>{{ current_user.username }} has sent you their booklist!</h4>
+            <table class="bookshelf">
+                <tr>
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th>Purchase Date</th>
+                    <th>Notes</th>
+                    <th colspan="2">Actions</th>
+                </tr>
+                {% for book in books %}
+                <tr>
+                    <td>{{ book.title }}</td>
+                    <td>{{ book.author }}</td>
+                    <td>{{ book.purchase_date }}</td>
+                    <td>{{ book.notes }}</td>
+                </tr>
+                {% endfor %}
+    </body>
+</html>
