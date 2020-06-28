@@ -2,7 +2,6 @@ import os
 import logging
 from logging.handlers import RotatingFileHandler
 from flask import Blueprint, Flask
-#from flask_bootstrap import Bootstrap
 from flask_login import LoginManager
 from flask_mail import Mail
 from flask_migrate import Migrate
@@ -13,7 +12,6 @@ db = SQLAlchemy()
 migrate = Migrate()
 login = LoginManager()
 login.login_view = 'auth.login'
-#Bootstrap(app)
 mail = Mail()
 
 def create_app(config_class=Config):
