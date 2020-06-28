@@ -1,1 +1,1 @@
-web: gunicorn app:bookshelf
+web: flask db upgrade; gunicorn bookshelf:app

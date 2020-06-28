@@ -15,3 +15,4 @@ class Config(object):
     MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
     MAIL_USE_TLS = False
     MAIL_USE_SSL = True
+    LOG_TO_STDOUT = os.environ.get('LOG_TO_STDOUT')
