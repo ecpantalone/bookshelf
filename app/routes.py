@@ -1,8 +1,8 @@
 from flask import render_template, flash, redirect, url_for, request
 from flask_login import login_user, logout_user, current_user, login_required
+from flask_mail import Message
 from werkzeug.urls import url_parse
-from app import app, db
-from app.email import send_booklist
+from app import app, db, mail
 from app.forms import BookForm, EditBookForm, EmptyForm, LoginForm, RegistrationForm, EmailBookList
 from app.models import User, Book
 
@@ -81,25 +81,30 @@ def remove_book(book_id):
 def edit_book(book_id):
     form = EditBookForm()
     if form.validate_on_submit():
-        # surprisssse flask-sqlalchemy has no update LOL
-        # adds a new entry
-        # then deletes that current entry you think you were editing
         book = Book.query.get(book_id)
-        edit_book = Book(title=form.title.data, author=form.author.data, notes=form.notes.data, purchase_date=form.purchase_date.data, user_id=current_user.id)
-        db.session.add(edit_book)
-        db.session.delete(book)
+        db.session.query(Book).filter(Book.id == book_id).update({
+            "title":form.title.data, 
+            "author":form.author.data, 
+            "notes":form.notes.data,
+            "purchase_date":form.purchase_date.data, 
+            "user_id":current_user.id
+        })
         db.session.commit()
         flash('Your changes have been saved')
         return redirect(url_for('index'))
     return render_template('edit_book.html', title='Edit Book', form=form)
 
-@app.route('/send_booklist', methods=['GET', 'POST'])
-def send_booklist():
+@app.route('/send_booklist/<user_id>', methods=['GET', 'POST'])
+@login_required
+def send_booklist(user_id):
     form = EmailBookList()
-    booklist = Book.query.filter_by(current_user.id).all()
+    #booklist = Book.query.filter_by(user_id=current_user.id).all()
     # save as a txt file... and then 
     if form.validate_on_submit():
-        user = User.query.filter_by(email=form.email.data).first()
+        booklist = Book.query.get(user_id).all()
+        msg = Message(form.message.data, form.sender.data, form.recipient.data)
+        msg.body = booklist
+        mail.send(msg)
         flash('Your booklist has been sent!')
         return redirect(url_for('index'))
     return render_template('email_booklist.html', title='Email a Booklist', form=form)
