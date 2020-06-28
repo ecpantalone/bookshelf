@@ -10,9 +10,9 @@
     <body>
         <h1>bookshelf.</h1>
             <h3>
-                <a href="{{ url_for('index') }}">Home</a>
-                <a href="{{ url_for('login') }}">Login</a>
-                <a href="{{ url_for('signup')}}">Sign Up</a>
+                <a href="{{ url_for('main.index') }}">Home</a>
+                <a href="{{ url_for('auth.login') }}">Login</a>
+                <a href="{{ url_for('auth.signup')}}">Sign Up</a>
             </h3>
 
         <h4>{{ current_user.username }} has sent you their booklist!</h4>
@@ -22,7 +22,6 @@
                     <th>Author</th>
                     <th>Purchase Date</th>
                     <th>Notes</th>
-                    <th colspan="2">Actions</th>
                 </tr>
                 {% for book in books %}
                 <tr>

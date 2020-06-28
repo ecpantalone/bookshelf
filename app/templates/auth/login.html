@@ -33,5 +33,5 @@
         <p>{{ form.remember_me() }} {{ form.remember_me.label }}</p>
         <p>{{ form.submit() }}</p>
     </form>
-    <p>Don't Have an Account? <a href="{{ url_for('signup') }}">Click to Sign Up!</a></p>
+    <p>Don't Have an Account? <a href="{{ url_for('auth.signup') }}">Click to Sign Up!</a></p>
 {% endblock %}
