@@ -44,3 +44,7 @@ class EditBookForm(FlaskForm):
                 
 class EmptyForm(FlaskForm):
     submit = SubmitField('Submit')
+
+class EmailBookList(FlaskForm):
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    submit = SubmitField('Send Booklist')

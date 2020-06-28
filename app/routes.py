@@ -2,7 +2,8 @@ from flask import render_template, flash, redirect, url_for, request
 from flask_login import login_user, logout_user, current_user, login_required
 from werkzeug.urls import url_parse
 from app import app, db
-from app.forms import BookForm, EditBookForm, EmptyForm, LoginForm, RegistrationForm
+from app.email import send_booklist
+from app.forms import BookForm, EditBookForm, EmptyForm, LoginForm, RegistrationForm, EmailBookList
 from app.models import User, Book
 
 @app.route('/')
@@ -57,41 +58,50 @@ def user(username):
 def add_book():
     form = BookForm()
     if form.validate_on_submit():
-        book = Book(title=form.title.data, author=form.author.data, notes=form.notes.data, purchase_date=form.purchase_date.data)
-        book.user_id = current_user.id
+        book = Book(title=form.title.data, author=form.author.data, notes=form.notes.data, purchase_date=form.purchase_date.data, user_id=current_user.id)
         db.session.add(book)
         db.session.commit()
         flash('Your book has been added')
         return redirect(url_for('index'))
     return render_template('add_book.html', title='Add Book', form=form)
 
+@app.route('/delete/<book_id>', methods=['POST'])
+@login_required
+def remove_book(book_id):
+    form = EmptyForm()
+    book = Book.query.get(book_id)
+    db.session.delete(book)
+    db.session.commit()
+    flash('Your book has been removed from your list.')
+    return redirect(url_for('index'))
+    return render_template('user.html', title='Profile', form=form, book=book)
+
 @app.route('/edit_book/<book_id>', methods=['GET', 'POST'])
 @login_required
 def edit_book(book_id):
-    book = Book.query.filter_by(id={})
-    form = EditBookForm(book_id)
+    form = EditBookForm()
     if form.validate_on_submit():
-        book = Book(title=form.title.data, author=form.author.data, notes=form.notes.data, purchase_date=form.purchase_date.data)
-        book.user_id = current_user.id
+        # surprisssse flask-sqlalchemy has no update LOL
+        # adds a new entry
+        # then deletes that current entry you think you were editing
+        book = Book.query.get(book_id)
+        edit_book = Book(title=form.title.data, author=form.author.data, notes=form.notes.data, purchase_date=form.purchase_date.data, user_id=current_user.id)
+        db.session.add(edit_book)
         db.session.delete(book)
-        db.session.add(book)
         db.session.commit()
         flash('Your changes have been saved')
         return redirect(url_for('index'))
     return render_template('edit_book.html', title='Edit Book', form=form)
 
-@app.route('/remove_book/<book_id>', methods=['GET', 'POST'])
-@login_required
-def remove_book(book_id):
-    form = EmptyForm()
+@app.route('/send_booklist', methods=['GET', 'POST'])
+def send_booklist():
+    form = EmailBookList()
+    booklist = Book.query.filter_by(current_user.id).all()
+    # save as a txt file... and then 
     if form.validate_on_submit():
-        book = Book.query.filter_by(id={})
-        db.session.delete(book)
-        db.session.commit()
-        flash('You have removed {} from your list.').format()
+        user = User.query.filter_by(email=form.email.data).first()
+        flash('Your booklist has been sent!')
         return redirect(url_for('index'))
-    else:
-        flash('Nope...book is still there.')
-        return redirect(url_for('index'))
+    return render_template('email_booklist.html', title='Email a Booklist', form=form)
 
-    return render_template('user.html', title='Profile', book=book)
+
