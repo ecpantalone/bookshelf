@@ -15,10 +15,13 @@ def signup():
     if form.validate_on_submit():
         user = User(username=form.username.data, email=form.email.data)
         user.set_password(form.password.data)
-        db.session.add(user)
-        db.session.commit()
-        flash('Your registration was successful')
-        return redirect(url_for('main.index'))
+        try:
+            db.session.add(user)
+            db.session.commit()
+            flash('Your registration was successful')
+            return redirect(url_for('main.index'))
+        except:
+            return 'unsuccessful registration, try again'
     return render_template('auth/signup.html', title='Sign Up', form=form)
 
 @bp.route('/login', methods=['GET', 'POST'])
@@ -27,12 +30,15 @@ def login():
         return redirect(url_for('main.index'))
     form = LoginForm()
     if form.validate_on_submit():
-        email = User.query.filter_by(email=form.email.data).first()
-        if email is None or not email.check_password(form.password.data):
-            flash('Invalid email or password')
-            return redirect(url_for('login'))
-        login_user(email, remember=form.remember_me.data)
-        return redirect(url_for('main.index'))
+        try:
+            email = User.query.filter_by(email=form.email.data).first()
+            if email is None or not email.check_password(form.password.data):
+                flash('Invalid email or password')
+                return redirect(url_for('login'))
+            login_user(email, remember=form.remember_me.data)
+            return redirect(url_for('main.index'))
+        except:
+            return 'there was a problem logging in, please try again'
     return render_template('auth/login.html', title='Sign In', form=form)
 
 @bp.route('/logout')
