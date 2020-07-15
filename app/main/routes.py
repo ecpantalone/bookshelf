@@ -27,21 +27,27 @@ def add_book():
     form = BookForm()
     if form.validate_on_submit():
         book = Book(title=form.title.data, author=form.author.data, notes=form.notes.data, purchase_date=form.purchase_date.data, user_id=current_user.id)
-        db.session.add(book)
-        db.session.commit()
-        flash('Your book has been added')
-        return redirect(url_for('main.index'))
+        try:
+            db.session.add(book)
+            db.session.commit()
+            flash('Your book has been added')
+            return redirect(url_for('main.index'))
+        except:
+            return 'there was an issue adding that book, please try again'
     return render_template('add_book.html', title='Add Book', form=form)
 
 @bp.route('/delete/<book_id>', methods=['POST'])
 @login_required
 def remove_book(book_id):
     form = EmptyForm()
-    book = Book.query.get(book_id)
-    db.session.delete(book)
-    db.session.commit()
-    flash('Your book has been removed from your list.')
-    return redirect(url_for('main.index'))
+    try:
+        book = Book.query.get(book_id)
+        db.session.delete(book)
+        db.session.commit()
+        flash('Your book has been removed from your list.')
+        return redirect(url_for('main.index'))
+    except:
+        return 'there was an issue deleting your book, please try again'
     return render_template('user.html', title='Profile', form=form, book=book)
 
 @bp.route('/edit_book/<book_id>', methods=['GET', 'POST'])
@@ -50,16 +56,20 @@ def edit_book(book_id):
     form = EditBookForm()
     if form.validate_on_submit():
         book = Book.query.get(book_id)
-        db.session.query(Book).filter(Book.id == book_id).update({
-            "title":form.title.data, 
-            "author":form.author.data, 
-            "notes":form.notes.data,
-            "purchase_date":form.purchase_date.data, 
-            "user_id":current_user.id
-        })
-        db.session.commit()
-        flash('Your changes have been saved')
-        return redirect(url_for('main.index'))
+
+        try:
+            db.session.query(Book).filter(Book.id == book_id).update({
+                "title":form.title.data, 
+                "author":form.author.data, 
+                "notes":form.notes.data,
+                "purchase_date":form.purchase_date.data, 
+                "user_id":current_user.id
+            })
+            db.session.commit()
+            flash('Your changes have been saved')
+            return redirect(url_for('main.index'))
+        except:
+            return 'There was an issue editing your book, please try again'
     return render_template('edit_book.html', title='Edit Book', form=form)
 
 @bp.route('/send_booklist/<username>', methods=['GET', 'POST'])
@@ -73,7 +83,10 @@ def send_booklist(username):
         recipient = form.recipient.data
         msg = Message("A Booklist for You!", recipients=[recipient], sender='python.flask.bookshelf@gmail.com')
         msg.html = render_template('booklist.html', username=username, books=books)
-        mail.send(msg)
-        flash('Your booklist has been sent!')
-        return redirect(url_for('main.index'))
+        try:
+            mail.send(msg)
+            flash('Your booklist has been sent!')
+            return redirect(url_for('main.index'))
+        except:
+            return 'There was an issue sending your list, please try again'
     return render_template('send_booklist.html', title='Email a Booklist', form=form, username=username, books=books)
