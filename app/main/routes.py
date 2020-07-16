@@ -52,27 +52,6 @@ def remove_book(book_id):
             return 'There was a problem deleting that book, please try again'
     return render_template('user.html', title='Profile', form=form, book=book)
 
-# @bp.route('/edit_book/<book_id>', methods=['GET', 'POST'])
-# @login_required
-# def edit_book(book_id):
-#     form = EditBookForm()
-#     book = Book.query.get(book_id)
-#     if form.validate_on_submit():
-#         try:
-#             db.session.query(Book).filter(Book.id == book_id).update({
-#                 "title":form.title.data, 
-#                 "author":form.author.data, 
-#                 "notes":form.notes.data,
-#                 "purchase_date":form.purchase_date.data, 
-#                 "user_id":current_user.id
-#             })
-#             db.session.commit()
-#             flash('Your changes have been saved')
-#             return redirect(url_for('main.index'))
-#         except:
-#             return 'There was an issue editing your book, please try again'
-#     return render_template('edit_book.html', title='Edit Book', form=form, book=book)
-
 @bp.route('/edit_book/<book_id>', methods=['GET', 'POST'])
 @login_required
 def edit_book(book_id):
