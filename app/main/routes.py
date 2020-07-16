@@ -6,6 +6,7 @@ from app import db, mail
 from app.main import bp
 from app.main.forms import BookForm, EditBookForm, EmptyForm, EmailBookList
 from app.models import User, Book
+from sqlalchemy import and_
 
 @bp.route('/')
 @bp.route('/index/')
@@ -40,23 +41,23 @@ def add_book():
 @login_required
 def remove_book(book_id):
     form = EmptyForm()
-    try:
-        book = Book.query.get(book_id)
-        db.session.delete(book)
-        db.session.commit()
-        flash('Your book has been removed from your list.')
-        return redirect(url_for('main.index'))
-    except:
-        return 'there was an issue deleting your book, please try again'
+    book = Book.query.get(book_id)
+    if book.user_id == current_user.id:
+        try:
+            db.session.delete(book)
+            db.session.commit()
+            flash('Your book has been removed from your list.')
+            return redirect(url_for('main.index'))
+        except:
+            return 'There was a problem deleting that book, please try again'
     return render_template('user.html', title='Profile', form=form, book=book)
 
 @bp.route('/edit_book/<book_id>', methods=['GET', 'POST'])
 @login_required
 def edit_book(book_id):
     form = EditBookForm()
+    book = Book.query.get(book_id)
     if form.validate_on_submit():
-        book = Book.query.get(book_id)
-
         try:
             db.session.query(Book).filter(Book.id == book_id).update({
                 "title":form.title.data, 
@@ -70,7 +71,7 @@ def edit_book(book_id):
             return redirect(url_for('main.index'))
         except:
             return 'There was an issue editing your book, please try again'
-    return render_template('edit_book.html', title='Edit Book', form=form)
+    return render_template('edit_book.html', title='Edit Book', form=form, book=book)
 
 @bp.route('/send_booklist/<username>', methods=['GET', 'POST'])
 @login_required
