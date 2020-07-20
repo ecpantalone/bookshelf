@@ -73,9 +73,9 @@ def edit_book(book_id):
         except:
             return 'There was an issue editing your book, please try again'
     elif request.method == 'GET':
-            form.title.data = book.title, 
-            form.author.data = book.author, 
-            form.notes.data = book.notes,
+            form.title.data = book.title 
+            form.author.data = book.author 
+            form.notes.data = book.notes
             form.purchase_date.data = book.purchase_date
     return render_template('edit_book.html', title='Edit Book', form=form)
 
